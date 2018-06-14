@@ -10,6 +10,6 @@ bin/build
 Then run
 
 ```
-bin/run
+bin/run [gate_api]
 ```
-To run the container.  Go to http://localhost:8089 and run the load test
+To run the container.  Where `[gate_api]` is your gate endpoint. Go to http://localhost:8089 and run the load test

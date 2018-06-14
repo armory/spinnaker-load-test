@@ -1,22 +1,15 @@
 from locust import HttpLocust, TaskSet, task
 
 class UserBehavior(TaskSet):
-    def on_start(self):
-        """ on_start is called when a Locust start before any task is scheduled """
-        self.login()
-
-    def login(self):
-        self.client.get("/")
+    @task(1)
+    def applications(self):
+        self.client.get("/applications")
 
     @task(2)
-    def index(self):
-        self.client.get("/")
-
-    @task(1)
-    def profile(self):
-        self.client.get("/profile")
+    def loadBalancers(self):
+        self.client.get("/loadBalancers?provider=kubernetes")
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
     min_wait = 1
-    max_wait = 2 
+    max_wait = 2

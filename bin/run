@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #     :::     :::::::::  ::::    ::::   ::::::::  :::::::::  :::   :::
 #   :+: :+:   :+:    :+: +:+:+: :+:+:+ :+:    :+: :+:    :+: :+:   :+:
 #  +:+   +:+  +:+    +:+ +:+ +:+:+ +:+ +:+    +:+ +:+    +:+  +:+ +:+
@@ -9,6 +9,24 @@
 
 source bin/_docker_image
 
-docker run -p 8089:8089 -i -t $DOCKER_IMAGE \
-  locust -f /app/spinnaker_load_test/locustfile.py \
-  --host=http://www.google.com
+function run_locust() {
+  echo $PWD
+  docker run -p 8089:8089 -i -t \
+    -v ${PWD}/src:/app \
+    $DOCKER_IMAGE \
+    locust -f /app/spinnaker_load_test/locustfile.py \
+    --host=$host
+}
+
+function usage() {
+  echo "Usage: bin/run [host]"
+  echo "host is a fully qualified URL pointing to your gate service instance.  Example: http://dev.spinnaker.example.com:8084/"
+}
+
+if [ $# -ne 1 ] ; then
+    echo "ERROR: Not enough arguments"
+    usage
+else
+    host=$1
+    run_locust
+fi
